@@ -1,0 +1,23 @@
+﻿using CrudApiTemplate.Attributes;
+using CrudApiTemplate.View;
+using WebApplication1.Models;
+
+namespace WebApplication1.View;
+
+[Include("Role")]
+[Include("Profiles")]
+public class UserView :  IView<User>
+{
+    public string UserName { get; set; } = string.Empty;
+
+    public string Email { get; set; } = string.Empty;
+
+    public RoleView Role { get; set; } = new();
+
+    public string RoleName { get; set; } = string.Empty;
+
+    public int Status { get; set; } = 1;
+
+    public IList<ProfileView> Profiles { get; set; } = new List<ProfileView>();
+
+}
