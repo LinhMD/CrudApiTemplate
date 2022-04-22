@@ -8,9 +8,9 @@ namespace WebApplication1.Services;
 public class UserService : ServiceCrud<User>
 {
     private readonly IUserRepository _userRepository;
-    public UserService(IUnitOfWork work) : base(work.Repository<User>()!)
+    public UserService(IUnitOfWork work) : base(work.Users)
     {
-        _userRepository = (work.Repository<User>() as IUserRepository)!;
+        _userRepository = work.Users;
     }
 
     public IEnumerable<UserView> Test()
