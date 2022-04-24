@@ -41,7 +41,7 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
     public IQueryable<TView> Test<TView>(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy)
         where TView : class, IView<TModel>, new()
     {
-        IQueryable<TView> models = new TView().DynamicInclude(Models)
+        IQueryable<TView> models = Models.AsQueryable()
             .Where(predicate)
             .OrderBy(orderBy)
             .ProjectToType<TView>();

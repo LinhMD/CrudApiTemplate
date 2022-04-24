@@ -5,9 +5,9 @@ namespace CrudApiTemplate.Request;
 
 public interface IFindRequest<TModel> where TModel: class
 {
-    Expression<Func<TModel, bool>> ToPredicate()
+    virtual Expression<Func<TModel, bool>> ToPredicate()
     {
-        var param = Expression.Parameter(typeof(TModel), "t");
+        var param = Expression.Parameter(typeof(TModel), typeof(TModel).Name);
         Expression expressionBody = Expression.Constant(true);
         foreach (var property in GetType().GetProperties())
         {

@@ -21,7 +21,7 @@ public class UserRepository : Repository<User>, IUserRepository
 
     public IEnumerable<UserView> Test()
     {
-        var userViews = Find<UserView>(u => true);
+        var userViews = Test<UserView>(u => true, u => u.Id).ToList();
         return userViews;
     }
 }
