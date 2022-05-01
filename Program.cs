@@ -20,7 +20,7 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddAuthorization(options =>
+/*builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("BadgeEntry", policy =>
         policy.RequireAssertion(context =>
@@ -36,11 +36,13 @@ builder.Services.AddAuthorization(options =>
                 (c.Type == "BadgeId" || c.Type == "TemporaryBadgeId")
                 && c.Issuer == "https://microsoftsecurity");
         }));
-});
+});*/
 
 
 
-TypeAdapterConfig<User, UserView>.NewConfig().Map(view => view.RoleSetting, user => user.Role.Setting);
+TypeAdapterConfig<User, UserView>.NewConfig()
+    .Map(view => view.RoleSetting, user => user.Role.Setting)
+    .Map(view => view.RoleName, user => user.Role.Name);
 
 var app = builder.Build();
 

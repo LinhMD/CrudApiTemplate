@@ -23,6 +23,7 @@ public class User
 
     public string? AvatarLink { get; set; }
 
-    public IList<Profile> Profiles { get; set; }
+    public IList<Profile> Profiles { get; set; } = new List<Profile>();
+
 
 }

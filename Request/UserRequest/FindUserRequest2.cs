@@ -7,7 +7,7 @@ namespace WebApplication1.Request.UserRequest;
 public class FindUserRequest2 : IFindRequest<User>
 {
     [Equal]
-    public int RoleId { get; set; }
+    public int Id { get; set; }
 
     public string? PhoneNumber { get; set; }
 

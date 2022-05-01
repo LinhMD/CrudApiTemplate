@@ -61,14 +61,14 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
 
     public IEnumerable<TView> GetAll<TView>() where TView : class, IView<TModel>, new()
     {
-        return new TView().DynamicInclude(Models)
+        return Models
             .ProjectToType<TView>()
             .ToList();
     }
 
     public async Task<IEnumerable<TView>> GetAllAsync<TView>() where TView : class, IView<TModel>, new()
     {
-        return await new TView().DynamicInclude(Models)
+        return await Models
             .ProjectToType<TView>()
             .ToListAsync();
     }
@@ -100,7 +100,7 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
     {
 
         total = Models.Count();
-        return new TView().DynamicInclude(Models)
+        return Models
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ProjectToType<TView>().ToList();
@@ -141,7 +141,7 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
     public IEnumerable<TView> GetOrderedPaging<TView>(Expression<Func<TModel, object>> orderBy, out int total, int page = 1, int pageSize = 20)
         where TView : class, IView<TModel>, new()
     {
-        var views = new TView().DynamicInclude(Models)
+        var views = Models
             .OrderBy(orderBy)
             .ProjectToType<TView>();
 
@@ -152,7 +152,7 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
 
     public async Task<(IEnumerable<TView> views, int total)> GetOrderedPagingAsync<TView>(Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new()
     {
-        var views = new TView().DynamicInclude(Models)
+        var views = Models
             .OrderBy(orderBy)
             .ProjectToType<TView>();
         var total = await views.CountAsync();
@@ -178,8 +178,7 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
     public IEnumerable<TView> Find<TView>(Expression<Func<TModel, bool>> predicate)
         where TView : class, IView<TModel>, new()
     {
-        return new TView()
-            .DynamicInclude(Models)
+        return Models
             .Where(predicate)
             .ProjectToType<TView>()
             .ToList();
@@ -187,8 +186,7 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
 
     public async Task<IEnumerable<TView>> FindAsync<TView>(Expression<Func<TModel, bool>> predicate) where TView : class, IView<TModel>, new()
     {
-        return await new TView()
-            .DynamicInclude(Models)
+        return await Models
             .Where(predicate)
             .ProjectToType<TView>()
             .ToListAsync();
@@ -217,7 +215,7 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
     public IEnumerable<TView> FindOrderedPaging<TView>(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy, out int total, int page = 1, int pageSize = 20)
         where TView : class, IView<TModel>, new()
     {
-        var views = new TView().DynamicInclude(Models)
+        var views = Models
             .Where(predicate)
             .OrderBy(orderBy)
             .ProjectToType<TView>();

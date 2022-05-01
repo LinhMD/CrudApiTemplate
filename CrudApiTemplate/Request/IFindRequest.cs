@@ -15,7 +15,6 @@ public interface IFindRequest<TModel> where TModel: class
             var value = property?.GetValue(this);
             if(value is null) continue;
 
-            Expression expression = default;
 
             Expression tProperty;
             FilterAttribute[] filters = Attribute.GetCustomAttributes(property!, typeof(FilterAttribute)) as FilterAttribute[] ?? Array.Empty<FilterAttribute>();
@@ -26,17 +25,14 @@ public interface IFindRequest<TModel> where TModel: class
                     var list = filter.Target?.Split(".").ToList();
                     //ex: t.Name
                     tProperty = Navigate(param, list, property);
-
-                    expression = filter.ToExpressionEvaluate(tProperty, value);
+                    expressionBody = Expression.And(expressionBody, filter.ToExpressionEvaluate(tProperty, value)!);
                 }
             }
             else
             {
                 tProperty = Expression.Property(param, property!.Name);
-                expression = Expression.Equal(tProperty, Expression.Constant(value));
+                expressionBody = Expression.And(expressionBody, Expression.Equal(tProperty, Expression.Constant(value))!);
             }
-
-            expressionBody = Expression.And(expressionBody, expression!);
         }
 
         //ex: t => ((t.Name == "nah") && (t.Role.Name == "admin"))
@@ -45,16 +41,15 @@ public interface IFindRequest<TModel> where TModel: class
         return lambda;
     }
 
-    private static Expression Navigate(ParameterExpression param, List<string>? list, PropertyInfo? property)
+    private static Expression Navigate(Expression param, IList<string>? list, MemberInfo? property)
     {
         Expression tProperty = Expression.Property(param, list?[0] ?? property!.Name);
         //if have more member navigation like t.Role.Name
-        if (list != null)
+        if (list == null) return tProperty;
+
+        foreach (var propertyName in list.Skip(1))
         {
-            foreach (var propertyName in list.Skip(1))
-            {
-                tProperty = Expression.PropertyOrField(tProperty, propertyName);
-            }
+            tProperty = Expression.PropertyOrField(tProperty, propertyName);
         }
 
         return tProperty;

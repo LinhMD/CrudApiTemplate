@@ -23,8 +23,4 @@ public class UserView :  IView<User>
 
     public IList<ProfileView> Profiles { get; set; } = new List<ProfileView>();
 
-    public void SetupMapping()
-    {
-        TypeAdapterConfig<User, UserView>.NewConfig().Map(view => view.RoleSetting, user => user.Role.Setting);
-    }
 }

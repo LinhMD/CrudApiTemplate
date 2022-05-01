@@ -14,14 +14,15 @@ public class FindUserRequest3 : IFindRequest<User>
     public int RoleIdGreaterThan { get; set; }
 
     [Contain("Role.Name")]
-    public string? RoleNameContain { get; set; }
-
     [Contain("UserName")]
-    public string? NameContainString { get; set; }
+    public string? NameContain { get; set; }
+
+
 
     [In("Id")]
     public List<int>? Ids { get; set; }
 
+    //User.Profiles.Any(Profile => Profile.Gender == ProfileGender)
     [Any("Profiles","Gender", typeof(EqualAttribute), typeof(Profile))]
     public bool ProfileGender { get; set; }
 

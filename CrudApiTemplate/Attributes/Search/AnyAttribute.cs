@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace CrudApiTemplate.Attributes.Search;
 
+///Ex: User.Profiles.Any(Profile => Profile.Gender == ProfileGender)
 public class AnyAttribute : FilterAttribute
 {
 
@@ -34,7 +35,7 @@ public class AnyAttribute : FilterAttribute
             memberExpression = Expression.Property(innerParameter, member);
         }
         //Profile.Gender == true;
-        var innerBody = Filter.ToExpressionEvaluate(Expression.Property(memberExpression, _property), value);
+        var innerBody = Filter.ToExpressionEvaluate(memberExpression, value);
         //Profile => Profile.Gender == true
         var innerLambda = Expression.Lambda(innerBody, innerParameter);
         var anyMethod = typeof(Enumerable).GetMethods().Single(m => m.Name == "Any" && m.GetParameters().Length == 2);

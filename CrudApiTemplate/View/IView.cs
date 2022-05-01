@@ -6,7 +6,7 @@ namespace CrudApiTemplate.View;
 
 public interface IView<TModel> where TModel : class
 {
-    public IQueryable<TModel> DynamicInclude(IQueryable<TModel> dbSet)
+    /*public IQueryable<TModel> DynamicInclude(IQueryable<TModel> dbSet)
     {
         foreach (var path in GetNavigatePaths(GetType()))
         {
@@ -19,8 +19,7 @@ public interface IView<TModel> where TModel : class
     {
         var customAttributes = viewType.GetCustomAttributes(typeof(IncludeAttribute), true);
         return customAttributes.Cast<IncludeAttribute>().Select(attribute => attribute.Path).ToList();
-    }
+    }*/
 
-    void SetupMapping();
 
 }

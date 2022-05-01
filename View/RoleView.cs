@@ -12,8 +12,5 @@ public class RoleView : IView<Role>
 
     public string Setting { get; set; } = string.Empty;
 
-    public void SetupMapping()
-    {
-        TypeAdapterConfig<Role, RoleView>.NewConfig();
-    }
+
 }
