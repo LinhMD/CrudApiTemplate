@@ -13,8 +13,4 @@ public class UserService : ServiceCrud<User>
         _userRepository = work.Users;
     }
 
-    public IEnumerable<UserView> Test()
-    {
-        return _userRepository.Test();
-    }
 }

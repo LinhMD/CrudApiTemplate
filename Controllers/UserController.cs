@@ -46,7 +46,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public IActionResult Test()
     {
-        return Ok(_service.Test());
+        return Ok(_service.GetAll<UserView>());
     }
 
     [HttpGet("1")]

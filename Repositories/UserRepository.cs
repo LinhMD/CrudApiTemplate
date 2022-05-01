@@ -19,9 +19,4 @@ public class UserRepository : Repository<User>, IUserRepository
             .Include(u => u.Profiles);
     }
 
-    public IEnumerable<UserView> Test()
-    {
-        var userViews = Test<UserView>(u => true, u => u.Id).ToList();
-        return userViews;
-    }
 }

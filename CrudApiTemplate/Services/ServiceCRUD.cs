@@ -76,15 +76,14 @@ public abstract class ServiceCrud<TModel> : IServiceCrud<TModel> where TModel : 
     public (IEnumerable<TModel> models, int total) FindSortedPaging(IOrderRequest<TModel> orderRequest)
     {
         PagingRequest paging = orderRequest.GetPaging();
-        IEnumerable<TModel> models = Repository.FindOrderedPaging(orderRequest.ToPredicate(), orderRequest.ToOrderBy(), out int total, paging.Page, paging.PageSize);
-        return (models, total);
+        return Repository.FindOrderedPaging(orderRequest.ToPredicate(), orderRequest.ToOrderBy(), paging.Page, paging.PageSize);
     }
 
     public (IEnumerable<TView> models, int total) FindSortedPaging<TView>(IOrderRequest<TModel> orderRequest) where TView : class, IView<TModel>, new()
     {
         PagingRequest paging = orderRequest.GetPaging();
-        IEnumerable<TView> models = Repository.FindOrderedPaging<TView>(orderRequest.ToPredicate(), orderRequest.ToOrderBy(), out int total, paging.Page, paging.PageSize);
-        return (models, total);
+
+        return Repository.FindOrderedPaging<TView>(orderRequest.ToPredicate(), orderRequest.ToOrderBy(), paging.Page, paging.PageSize);
     }
     public TModel Get(int id)
     {
