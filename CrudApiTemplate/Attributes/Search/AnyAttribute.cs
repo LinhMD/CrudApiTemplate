@@ -26,8 +26,15 @@ public class AnyAttribute : FilterAttribute
     {
         //Profile
         var innerParameter = Expression.Parameter(_paraType, _paraType.Name);
+
+        var members = _property.Split(".");
+        var memberExpression = Expression.Property(innerParameter, members[0]);
+        foreach (var member in members.Skip(1))
+        {
+            memberExpression = Expression.Property(innerParameter, member);
+        }
         //Profile.Gender == true;
-        var innerBody = Filter.ToExpressionEvaluate(Expression.Property(innerParameter, _property), value);
+        var innerBody = Filter.ToExpressionEvaluate(Expression.Property(memberExpression, _property), value);
         //Profile => Profile.Gender == true
         var innerLambda = Expression.Lambda(innerBody, innerParameter);
         var anyMethod = typeof(Enumerable).GetMethods().Single(m => m.Name == "Any" && m.GetParameters().Length == 2);

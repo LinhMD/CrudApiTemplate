@@ -81,6 +81,7 @@ public abstract class ViewModel<TModel> : IView<TModel> where TModel : class
         return dbSet;
     }
 
+    public abstract void SetupMapping();
     public static Expression<Func<TSource, TTarget>> BuildSelector<TSource, TTarget>(string members) =>
         BuildSelector<TSource, TTarget>(members.Split(',').Select(m => m.Trim()));
 

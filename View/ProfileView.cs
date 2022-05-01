@@ -21,4 +21,8 @@ public class ProfileView : IView<Profile>
 
     public bool Gender { get; set; } = true;
 
+    public void SetupMapping()
+    {
+
+    }
 }

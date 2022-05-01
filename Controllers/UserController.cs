@@ -48,4 +48,10 @@ public class UserController : ControllerBase
     {
         return Ok(_service.Test());
     }
+
+    [HttpGet("1")]
+    public IActionResult nah()
+    {
+        return Ok(_service.GetAll<UserView>());
+    }
 }
