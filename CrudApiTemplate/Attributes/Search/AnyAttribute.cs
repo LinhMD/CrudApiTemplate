@@ -6,13 +6,12 @@ namespace CrudApiTemplate.Attributes.Search;
 ///Ex: User.Profiles.Any(Profile => Profile.Gender == ProfileGender)
 public class AnyAttribute : FilterAttribute
 {
-
+    private static readonly MethodInfo AnyMethod = typeof(Enumerable).GetMethods().Single(m => m.Name == "Any" && m.GetParameters().Length == 2);
     private FilterAttribute Filter { get; }
 
-    private readonly Type _paraType;
 
     private readonly string _property;
-    public AnyAttribute(string target, string property, Type filterType, Type paraType) : base(target)
+    public AnyAttribute(string target, string property, Type filterType) : base(target)
     {
 
         if (!filterType.IsSubclassOf(typeof(FilterAttribute)))
@@ -20,13 +19,13 @@ public class AnyAttribute : FilterAttribute
 
         Filter = (FilterAttribute?) Activator.CreateInstance(filterType, property) ?? new EqualAttribute(property);
 
-        _paraType = paraType;
         _property = property;
     }
     public override Expression ToExpressionEvaluate(Expression parameter, object value)
     {
+        var parameterType = parameter.Type.GetTypeInfo().GenericTypeArguments[0];
         //Profile
-        var innerParameter = Expression.Parameter(_paraType, _paraType.Name);
+        var innerParameter = Expression.Parameter(parameterType, parameterType.Name);
 
         var members = _property.Split(".");
         var memberExpression = Expression.Property(innerParameter, members[0]);
@@ -38,8 +37,7 @@ public class AnyAttribute : FilterAttribute
         var innerBody = Filter.ToExpressionEvaluate(memberExpression, value);
         //Profile => Profile.Gender == true
         var innerLambda = Expression.Lambda(innerBody, innerParameter);
-        var anyMethod = typeof(Enumerable).GetMethods().Single(m => m.Name == "Any" && m.GetParameters().Length == 2);
-        anyMethod = anyMethod.MakeGenericMethod(_paraType);
+        var anyMethod = AnyMethod.MakeGenericMethod(parameterType);
         //User.Profiles.Any(Profile => (Profile.Gender == True))
         return Expression.Call(null, anyMethod, parameter, innerLambda);
     }

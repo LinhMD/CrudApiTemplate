@@ -17,14 +17,15 @@ public class FindUserRequest3 : IFindRequest<User>
     [Contain("UserName")]
     public string? NameContain { get; set; }
 
-
-
     [In("Id")]
     public List<int>? Ids { get; set; }
 
     //User.Profiles.Any(Profile => Profile.Gender == ProfileGender)
-    [Any("Profiles","Gender", typeof(EqualAttribute), typeof(Profile))]
+    [Any("Profiles","Gender", typeof(EqualAttribute))]
     public bool ProfileGender { get; set; }
+
+    [Any("Profiles","Id", typeof(EqualAttribute))]
+    public int ProfileId { get; set; }
 
     /*public Expression<Func<User, bool>> ToPredicate()
     {
