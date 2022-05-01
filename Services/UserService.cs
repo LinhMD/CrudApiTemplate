@@ -1,7 +1,6 @@
 ﻿using CrudApiTemplate.Services;
 using WebApplication1.Models;
 using WebApplication1.Repositories;
-using WebApplication1.View;
 
 namespace WebApplication1.Services;
 
