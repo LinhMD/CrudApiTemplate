@@ -54,4 +54,13 @@ public class UserController : ControllerBase
     {
         return Ok(_service.GetAll<UserView>());
     }
+
+    [HttpPost("create")]
+    public IActionResult Create([FromBody] UserCreateRequest createRequest)
+    {
+        var begin = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        var user = createRequest.CreateNew();
+        _logger.Log(LogLevel.Information, "time:" + (DateTimeOffset.Now.ToUnixTimeMilliseconds() - begin));
+        return Ok(user);
+    }
 }

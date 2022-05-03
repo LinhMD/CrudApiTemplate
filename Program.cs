@@ -1,3 +1,4 @@
+using CrudApiTemplate.Repositories;
 using Mapster;
 using WebApplication1.Data;
 using WebApplication1.Models;
@@ -18,7 +19,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IWebUow, WebUow>();
 
 /*builder.Services.AddAuthorization(options =>
 {

@@ -9,19 +9,21 @@ namespace CrudApiTemplate.Services;
 public abstract class ServiceCrud<TModel> : IServiceCrud<TModel> where TModel : class
 {
     protected readonly IRepository<TModel> Repository;
+    protected IUnitOfWork UnitOfWork;
 
-    public ServiceCrud(IRepository<TModel> repository)
+    public ServiceCrud(IRepository<TModel> repository, IUnitOfWork work)
     {
         Repository = repository;
+        UnitOfWork = work;
     }
 
 
 
     public TModel Create(ICreateRequest<TModel> createRequest)
     {
-        TModel model = createRequest.CreateNew();
+        var model = createRequest.CreateNew(UnitOfWork);
 
-        Validation.Validate(model);
+        model.Validate();
 
         try
         {
@@ -38,7 +40,7 @@ public abstract class ServiceCrud<TModel> : IServiceCrud<TModel> where TModel : 
 
     public TModel Delete(int id)
     {
-        TModel model = Get(id);
+        var model = Get(id);
 
         try
         {
@@ -54,11 +56,11 @@ public abstract class ServiceCrud<TModel> : IServiceCrud<TModel> where TModel : 
 
     public TView Get<TView>(int id) where TView : class, IView<TModel>, new()
     {
-        TView? model = Repository.Get<TView>(id);
+        var view = Repository.Get<TView>(id);
 
-        if (model == null) throw new ModelNotFoundException<TModel>(typeof(TModel).Name);
+        if (view == null) throw new ModelNotFoundException<TModel>(typeof(TModel).Name);
 
-        return model;
+        return view;
     }
 
 
@@ -108,7 +110,9 @@ public abstract class ServiceCrud<TModel> : IServiceCrud<TModel> where TModel : 
     {
         var model = Get(id);
 
-        updateRequest.UpdateModel(ref model);
+        updateRequest.UpdateModel(ref model, UnitOfWork);
+
+        model.Validate();
 
         try
         {

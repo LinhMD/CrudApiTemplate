@@ -3,24 +3,21 @@ using CrudApiTemplate.CustomException;
 
 namespace CrudApiTemplate.Utilities
 {
-    public class Validation
+    public static class Validation
     {
-
-        public static void Validate(Object obj)
+        public static void Validate(this object obj)
         {
-            ValidationContext vc = new ValidationContext(obj);
-            ICollection<ValidationResult> results = new List<ValidationResult>();
-            bool isValid = Validator.TryValidateObject(obj, vc, results, true);
-            if (!isValid)
+            var vc = new ValidationContext(obj);
+            var results = new List<ValidationResult>();
+            var isValid = Validator.TryValidateObject(obj, vc, results, true);
+            if (isValid) return;
+            var error = "";
+            foreach (var item in results)
             {
-                string error = "";
-                foreach (var item in results)
-                {
-                    error += item.ErrorMessage;
-                    error += "\n";
-                }
-                throw new ModelValueInvalidException(error);
+                error += item.ErrorMessage;
+                error += "\n";
             }
+            throw new ModelValueInvalidException(error);
         }
 
     }

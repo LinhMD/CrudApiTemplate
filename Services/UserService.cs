@@ -6,10 +6,9 @@ namespace WebApplication1.Services;
 
 public class UserService : ServiceCrud<User>
 {
-    private readonly IUserRepository _userRepository;
-    public UserService(IUnitOfWork work) : base(work.Users)
+    public UserService(IWebUow work) : base(work.Users, work)
     {
-        _userRepository = work.Users;
+
     }
 
 }
