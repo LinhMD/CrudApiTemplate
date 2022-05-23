@@ -22,6 +22,23 @@ public static class QueryableExtensions
         return sortModels;
     }
 
+    private static IOrderedQueryable<TModel> Order<TModel, TKey>(IQueryable<TModel> models, bool isAscending,ParameterExpression para, Expression member) where TModel: class
+    {
+        Expression<Func<TModel, TKey>> orderExpression = Expression.Lambda<Func<TModel, TKey>>(member, para);
+        IOrderedQueryable<TModel> sortModels = isAscending
+            ? models.OrderBy(orderExpression)
+            : models.OrderByDescending(orderExpression);
+        return sortModels;
+    }
+    private static IOrderedQueryable<TModel> ThenOrder<TModel, TKey>(IOrderedQueryable<TModel> models, bool isAscending,ParameterExpression para, Expression member) where TModel: class
+    {
+        Expression<Func<TModel, TKey>> orderExpression = Expression.Lambda<Func<TModel, TKey>>(member, para);
+        IOrderedQueryable<TModel> sortModels = isAscending
+            ? models.ThenBy(orderExpression)
+            : models.ThenByDescending(orderExpression);
+        return sortModels;
+    }
+
     //It's fucked but fuk it
     //https://stackoverflow.com/questions/32146571/expression-of-type-system-int64-cannot-be-used-for-return-type-system-object
     public static IOrderedQueryable<TModel> Order<TModel>(IQueryable<TModel> models, OrderModel<TModel> orderModel)
@@ -29,104 +46,60 @@ public static class QueryableExtensions
     {
         var para = Expression.Parameter(typeof(TModel), typeof(TModel).Name.ToLower());
         var member = Expression.Property(para, orderModel.PropertyName);
-        IOrderedQueryable<TModel> sortModels;
 
         //object type
         if (member.Type == typeof(object))
         {
-            Expression<Func<TModel, object>> orderExpression = Expression.Lambda<Func<TModel, object>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, object>(models, orderModel.IsAscending, para, member);
         }
 
         //string type
         if (member.Type == typeof(string))
         {
-            Expression<Func<TModel, string>> orderExpression = Expression.Lambda<Func<TModel, string>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, string>(models, orderModel.IsAscending, para, member);
         }
+
+
         //Integer types:
         if (member.Type == typeof(int))
         {
-            Expression<Func<TModel, int>> orderExpression = Expression.Lambda<Func<TModel, int>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, int>(models, orderModel.IsAscending, para, member);
         }
-
         if(member.Type == typeof(long))
         {
-            Expression<Func<TModel, long>> orderExpression = Expression.Lambda<Func<TModel, long>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, long>(models, orderModel.IsAscending, para, member);
         }
-
         if(member.Type == typeof(byte))
         {
-            Expression<Func<TModel, byte>> orderExpression = Expression.Lambda<Func<TModel, byte>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, byte>(models, orderModel.IsAscending, para, member);
         }
 
         //Floating-point numeric types
         if(member.Type == typeof(double))
         {
-            Expression<Func<TModel, double>> orderExpression = Expression.Lambda<Func<TModel, double>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, double>(models, orderModel.IsAscending, para, member);
         }
-
         if(member.Type == typeof(float))
         {
-            Expression<Func<TModel, float>> orderExpression = Expression.Lambda<Func<TModel, float>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, float>(models, orderModel.IsAscending, para, member);
         }
-
         if(member.Type == typeof(decimal))
         {
-            Expression<Func<TModel, decimal>> orderExpression = Expression.Lambda<Func<TModel, decimal>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, decimal>(models, orderModel.IsAscending, para, member);
         }
 
         //boolean type
         if(member.Type == typeof(bool))
         {
-            Expression<Func<TModel, bool>> orderExpression = Expression.Lambda<Func<TModel, bool>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, bool>(models, orderModel.IsAscending, para, member);
         }
 
         //char type
         if(member.Type == typeof(char))
         {
-            Expression<Func<TModel, char>> orderExpression = Expression.Lambda<Func<TModel, char>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.OrderBy(orderExpression)
-                : models.OrderByDescending(orderExpression);
-            return sortModels;
+            return Order<TModel, char>(models, orderModel.IsAscending, para, member);
         }
-
-
+        
         throw new Exception($"Unsupported type {member.Type}");
     }
 
@@ -140,96 +113,56 @@ public static class QueryableExtensions
         //object type
         if (member.Type == typeof(object))
         {
-            Expression<Func<TModel, object>> orderExpression = Expression.Lambda<Func<TModel, object>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, object>(models, orderModel.IsAscending, para, member);
         }
 
         //string type
         if (member.Type == typeof(string))
         {
-            Expression<Func<TModel, string>> orderExpression = Expression.Lambda<Func<TModel, string>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, string>(models, orderModel.IsAscending, para, member);
         }
         //Integer types:
         if (member.Type == typeof(int))
         {
-            Expression<Func<TModel, int>> orderExpression = Expression.Lambda<Func<TModel, int>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, int>(models, orderModel.IsAscending, para, member);
         }
 
         if(member.Type == typeof(long))
         {
-            Expression<Func<TModel, long>> orderExpression = Expression.Lambda<Func<TModel, long>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, long>(models, orderModel.IsAscending, para, member);
         }
 
         if(member.Type == typeof(byte))
         {
-            Expression<Func<TModel, byte>> orderExpression = Expression.Lambda<Func<TModel, byte>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, byte>(models, orderModel.IsAscending, para, member);
         }
 
         //Floating-point numeric types
         if(member.Type == typeof(double))
         {
-            Expression<Func<TModel, double>> orderExpression = Expression.Lambda<Func<TModel, double>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, double>(models, orderModel.IsAscending, para, member);
         }
 
         if(member.Type == typeof(float))
         {
-            Expression<Func<TModel, float>> orderExpression = Expression.Lambda<Func<TModel, float>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, float>(models, orderModel.IsAscending, para, member);
         }
 
         if(member.Type == typeof(decimal))
         {
-            Expression<Func<TModel, decimal>> orderExpression = Expression.Lambda<Func<TModel, decimal>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, decimal>(models, orderModel.IsAscending, para, member);
         }
 
         //boolean type
         if(member.Type == typeof(bool))
         {
-            Expression<Func<TModel, bool>> orderExpression = Expression.Lambda<Func<TModel, bool>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, bool>(models, orderModel.IsAscending, para, member);
         }
 
         //char type
         if(member.Type == typeof(char))
         {
-            Expression<Func<TModel, char>> orderExpression = Expression.Lambda<Func<TModel, char>>(member, para);
-            sortModels = orderModel.IsAscending
-                ? models.ThenBy(orderExpression)
-                : models.ThenByDescending(orderExpression);
-            return sortModels;
+            return ThenOrder<TModel, char>(models, orderModel.IsAscending, para, member);
         }
 
 
