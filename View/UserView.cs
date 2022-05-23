@@ -23,4 +23,6 @@ public class UserView :  IView<User>
 
     public IList<ProfileView> Profiles { get; set; } = new List<ProfileView>();
 
+    public int NumOfProfiles { get; set; }
+
 }

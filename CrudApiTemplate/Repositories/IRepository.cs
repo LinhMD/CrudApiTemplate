@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using CrudApiTemplate.Request;
+using CrudApiTemplate.Utilities;
 using CrudApiTemplate.View;
 
 namespace CrudApiTemplate.Repositories;
@@ -27,13 +29,13 @@ public interface IRepository<TModel> where TModel : class
 
     Task<(IEnumerable<TView> views, int total)> GetPagingAsync<TView>(int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new();
 
-    (IEnumerable<TModel> models, int total) GetOrderedPaging(Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20);
+    (IEnumerable<TModel> models, int total) GetOrderedPaging(IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20);
 
-    Task<(IEnumerable<TModel> models, int total)> GetOrderedPagingAsync(Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20);
+    Task<(IEnumerable<TModel> models, int total)> GetOrderedPagingAsync(IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20);
 
-    (IEnumerable<TView> views, int total) GetOrderedPaging<TView>(Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new();
+    (IEnumerable<TView> views, int total) GetOrderedPaging<TView>(IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new();
 
-    Task<(IEnumerable<TView> views, int total)> GetOrderedPagingAsync<TView>(Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new();
+    Task<(IEnumerable<TView> views, int total)> GetOrderedPagingAsync<TView>(IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new();
 
     IEnumerable<TModel> Find(Expression<Func<TModel, bool>> predicate);
 
@@ -43,13 +45,13 @@ public interface IRepository<TModel> where TModel : class
 
     Task<IEnumerable<TView>> FindAsync<TView>(Expression<Func<TModel, bool>> predicate) where TView : class, IView<TModel>, new();
 
-    (IEnumerable<TModel> models, int total) FindOrderedPaging(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20);
+    (IEnumerable<TModel> models, int total) FindOrderedPaging(Expression<Func<TModel, bool>> predicate, IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20);
 
-    Task<(IEnumerable<TModel> models, int total)> FindOrderedPagingAsync(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy,  int page = 1, int pageSize = 20);
+    Task<(IEnumerable<TModel> models, int total)> FindOrderedPagingAsync(Expression<Func<TModel, bool>> predicate, IOrderRequest<TModel> orderBy,  int page = 1, int pageSize = 20);
 
-    (IEnumerable<TView> views, int total) FindOrderedPaging<TView>(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new();
+    (IEnumerable<TView> views, int total) FindOrderedPaging<TView>(Expression<Func<TModel, bool>> predicate, IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new();
 
-    Task<(IEnumerable<TView> views, int total)> FindOrderedPagingAsync<TView>(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new();
+    Task<(IEnumerable<TView> views, int total)> FindOrderedPagingAsync<TView>(Expression<Func<TModel, bool>> predicate, IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new();
 
 
     IQueryable<TModel> WithAllData();

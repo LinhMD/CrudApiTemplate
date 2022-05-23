@@ -5,4 +5,5 @@ namespace WebApplication1.Repositories;
 
 public interface IUserRepository : IRepository<User>
 {
+    public List<User> test();
 }

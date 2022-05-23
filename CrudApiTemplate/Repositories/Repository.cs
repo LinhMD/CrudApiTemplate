@@ -1,17 +1,20 @@
 ﻿using System.Linq.Expressions;
+using CrudApiTemplate.Request;
 using CrudApiTemplate.View;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using CrudApiTemplate.Utilities;
+
 
 namespace CrudApiTemplate.Repositories;
 
-public abstract class Repository<TModel> : IRepository<TModel> where TModel : class
+public class Repository<TModel> : IRepository<TModel> where TModel : class
 {
 
     protected readonly DbContext Context;
     protected readonly DbSet<TModel> Models;
 
-    protected Repository(DbContext context)
+    public Repository(DbContext context)
     {
         Context = context;
         Models = context.Set<TModel>();
@@ -108,18 +111,18 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
         return (models, total);
     }
 
-    public (IEnumerable<TModel> models, int total) GetOrderedPaging(Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20)
+    public (IEnumerable<TModel> models, int total) GetOrderedPaging(IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20)
     {
-        var models = WithAllData().OrderBy(orderBy);
+        var models = WithAllData().OrderByRequest(orderBy);
 
         var total = models.Count();
 
         return (models.Skip((page - 1) * pageSize).Take(pageSize).ToList(), total);
     }
 
-    public async Task<(IEnumerable<TModel> models, int total)> GetOrderedPagingAsync(Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20)
+    public async Task<(IEnumerable<TModel> models, int total)> GetOrderedPagingAsync(IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20)
     {
-        var models = WithAllData().OrderBy(orderBy);
+        var models = WithAllData().OrderByRequest(orderBy);
 
         int total = await models.CountAsync();
         var result = await models.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -127,11 +130,11 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
         return (result, total);
     }
 
-    public (IEnumerable<TView> views, int total) GetOrderedPaging<TView>(Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20)
+    public (IEnumerable<TView> views, int total) GetOrderedPaging<TView>(IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20)
         where TView : class, IView<TModel>, new()
     {
         var views = Models
-            .OrderBy(orderBy)
+            .OrderByRequest(orderBy)
             .ProjectToType<TView>();
 
         var total = views.Count();
@@ -139,10 +142,10 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
         return (views.Skip((page - 1) * pageSize).Take(pageSize).ToList(), total);
     }
 
-    public async Task<(IEnumerable<TView> views, int total)> GetOrderedPagingAsync<TView>(Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new()
+    public async Task<(IEnumerable<TView> views, int total)> GetOrderedPagingAsync<TView>(IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new()
     {
         var views = Models
-            .OrderBy(orderBy)
+            .OrderByRequest(orderBy)
             .ProjectToType<TView>();
         var total = await views.CountAsync();
         return (await views.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(), total);
@@ -181,43 +184,43 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
             .ToListAsync();
     }
 
-    public (IEnumerable<TModel> models, int total) FindOrderedPaging(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20)
+    public (IEnumerable<TModel> models, int total) FindOrderedPaging(Expression<Func<TModel, bool>> predicate, IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20)
     {
         var views = WithAllData()
             .Where(predicate)
-            .OrderBy(orderBy);
+            .OrderByRequest(orderBy);
         var total = views.Count();
 
         return (views.Skip((page - 1) * pageSize).Take(pageSize).ToList(), total);
     }
 
-    public async Task<(IEnumerable<TModel> models, int total)> FindOrderedPagingAsync(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20)
+    public async Task<(IEnumerable<TModel> models, int total)> FindOrderedPagingAsync(Expression<Func<TModel, bool>> predicate, IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20)
     {
         var views = WithAllData()
             .Where(predicate)
-            .OrderBy(orderBy);
-        int total = await views.CountAsync();
+            .OrderByRequest(orderBy);
+        var total = await views.CountAsync();
 
         return (await views.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(), total);
     }
 
-    public (IEnumerable<TView> views, int total) FindOrderedPaging<TView>(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy,  int page = 1, int pageSize = 20)
+    public (IEnumerable<TView> views, int total) FindOrderedPaging<TView>(Expression<Func<TModel, bool>> predicate, IOrderRequest<TModel> orderBy,  int page = 1, int pageSize = 20)
         where TView : class, IView<TModel>, new()
     {
         var views = Models
             .Where(predicate)
-            .OrderBy(orderBy)
+            .OrderByRequest(orderBy)
             .ProjectToType<TView>();
         var total = views.Count();
 
         return (views.Skip((page - 1) * pageSize).Take(pageSize).ToList(), total);
     }
 
-    public async Task<(IEnumerable<TView> views, int total)> FindOrderedPagingAsync<TView>(Expression<Func<TModel, bool>> predicate, Expression<Func<TModel, object>> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new()
+    public async Task<(IEnumerable<TView> views, int total)> FindOrderedPagingAsync<TView>(Expression<Func<TModel, bool>> predicate, IOrderRequest<TModel> orderBy, int page = 1, int pageSize = 20) where TView : class, IView<TModel>, new()
     {
         var views = WithAllData()
             .Where(predicate)
-            .OrderBy(orderBy)
+            .OrderByRequest(orderBy)
             .ProjectToType<TView>();
         int total = await views.CountAsync();
 
@@ -291,6 +294,9 @@ public abstract class Repository<TModel> : IRepository<TModel> where TModel : cl
     }
 
 
-    public abstract IQueryable<TModel> WithAllData();
+    public virtual IQueryable<TModel> WithAllData()
+    {
+        return this.Models.AsQueryable();
+    }
 
 }

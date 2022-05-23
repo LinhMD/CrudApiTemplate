@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CrudApiTemplate.Utilities;
+using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Models;
 using WebApplication1.Request.UserRequest;
 using WebApplication1.Services;
 using WebApplication1.View;
@@ -35,8 +37,8 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
-    [HttpPost("3")]
-    public IActionResult FindUser3(FindUserRequest3 request)
+    [HttpGet("3")]
+    public IActionResult FindUser3([FromQuery]FindUserRequest3 request)
     {
         var begin = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         var users = _service.Find(request);
@@ -62,5 +64,10 @@ public class UserController : ControllerBase
         var user = createRequest.CreateNew();
         _logger.Log(LogLevel.Information, "time:" + (DateTimeOffset.Now.ToUnixTimeMilliseconds() - begin));
         return Ok(user);
+    }
+    [HttpGet("Tesst")]
+    public IActionResult bruh()
+    {
+        return Ok(_service.test());
     }
 }

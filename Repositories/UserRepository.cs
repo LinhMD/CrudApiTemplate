@@ -1,7 +1,7 @@
 ﻿using CrudApiTemplate.Repositories;
+using CrudApiTemplate.Utilities;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
-using WebApplication1.View;
 
 namespace WebApplication1.Repositories;
 
@@ -17,6 +17,20 @@ public class UserRepository : Repository<User>, IUserRepository
             .AsQueryable()
             .Include(u => u.Role)
             .Include(u => u.Profiles);
+    }
+
+    public List<User> test()
+    {
+        var request = new OrderRequest<User>();
+
+        request.OrderModels.Add(new OrderModel<User>()
+        {
+            IsAscending = true,
+            PropertyName = nameof(User.PhoneNumber)
+        });
+
+
+        return Models.AsQueryable().OrderByRequest(request).ToList();
     }
 
 }

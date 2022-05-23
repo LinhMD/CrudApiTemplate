@@ -43,7 +43,8 @@ builder.Services.AddScoped<IWebUow, WebUow>();
 
 TypeAdapterConfig<User, UserView>.NewConfig()
     .Map(view => view.RoleSetting, user => user.Role.Setting)
-    .Map(view => view.RoleName, user => user.Role.Name);
+    .Map(view => view.RoleName, user => user.Role.Name)
+    .Map(view => view.NumOfProfiles, user => user.Profiles.Count);
 
 var app = builder.Build();
 
