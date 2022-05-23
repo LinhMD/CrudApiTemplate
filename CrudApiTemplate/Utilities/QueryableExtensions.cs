@@ -22,18 +22,18 @@ public static class QueryableExtensions
         return sortModels;
     }
 
-    private static IOrderedQueryable<TModel> Order<TModel, TKey>(IQueryable<TModel> models, bool isAscending,ParameterExpression para, Expression member) where TModel: class
+    public static IOrderedQueryable<TModel> Order<TModel, TKey>(IQueryable<TModel> models, bool isAscending,ParameterExpression para, Expression member) where TModel: class
     {
-        Expression<Func<TModel, TKey>> orderExpression = Expression.Lambda<Func<TModel, TKey>>(member, para);
-        IOrderedQueryable<TModel> sortModels = isAscending
+        var orderExpression = Expression.Lambda<Func<TModel, TKey>>(member, para);
+        var sortModels = isAscending
             ? models.OrderBy(orderExpression)
             : models.OrderByDescending(orderExpression);
         return sortModels;
     }
-    private static IOrderedQueryable<TModel> ThenOrder<TModel, TKey>(IOrderedQueryable<TModel> models, bool isAscending,ParameterExpression para, Expression member) where TModel: class
+    public static IOrderedQueryable<TModel> ThenOrder<TModel, TKey>(IOrderedQueryable<TModel> models, bool isAscending,ParameterExpression para, Expression member) where TModel: class
     {
-        Expression<Func<TModel, TKey>> orderExpression = Expression.Lambda<Func<TModel, TKey>>(member, para);
-        IOrderedQueryable<TModel> sortModels = isAscending
+        var orderExpression = Expression.Lambda<Func<TModel, TKey>>(member, para);
+        var sortModels = isAscending
             ? models.ThenBy(orderExpression)
             : models.ThenByDescending(orderExpression);
         return sortModels;
@@ -58,7 +58,6 @@ public static class QueryableExtensions
         {
             return Order<TModel, string>(models, orderModel.IsAscending, para, member);
         }
-
 
         //Integer types:
         if (member.Type == typeof(int))
@@ -108,7 +107,6 @@ public static class QueryableExtensions
     {
         var para = Expression.Parameter(typeof(TModel), typeof(TModel).Name.ToLower());
         var member = Expression.Property(para, orderModel.PropertyName);
-        IOrderedQueryable<TModel> sortModels;
 
         //object type
         if (member.Type == typeof(object))
@@ -164,7 +162,6 @@ public static class QueryableExtensions
         {
             return ThenOrder<TModel, char>(models, orderModel.IsAscending, para, member);
         }
-
 
         throw new Exception($"Unsupported type {member.Type}");
     }
